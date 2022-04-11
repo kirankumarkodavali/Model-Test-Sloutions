@@ -1,0 +1,197 @@
+1st Question
+
+App.component.html
+
+<h1 style="text-align:center;">ONLINE SHOPPING</h1>
+<div class="card card-default" style="width:1200px;text-align: center;">
+  <div class="card-body">
+    <div class="card" style="margin-left:400px; margin-top:50px">
+       <img [src]="imageLocation" width="35%" height="50%" style="padding:25px">
+      <div class="card-body">
+       <h4>Category : {{productTitle}}</h4>
+       <h4>Price : {{productPrice | currency:"INR"}}</h4>
+       <h4>Stock : {{stock}}</h4>
+      </div>
+   
+      <button type="button" style="background-color:green;color:whitesmoke;width:150px;margin-left:30px;margin-bottom:20px">ADD TO CART</button>
+   </div>
+   </div>
+ 
+ 
+ </div>
+ 
+ App.component.ts
+ 
+import { Component } from '@angular/core';
+import { FormGroup, FormControl,Validators } from '@angular/forms';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+title = 'MOBILE PRODUCT';
+productTitle:string="I-Phone";
+productPrice:number=100000;
+stock:number=24;
+imageLocation:string='https://images.unsplash.com/photo-1611791485440-24e8239a0377?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGlwaG9uZSUyMDEyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
+}
+
+
+3rd Question
+
+App.componet.html
+
+<head>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<h3 style="text-align: center;">PRODUCT DETAILS</h3>
+<div class = "container">
+<form (ngSubmit)="store()" [formGroup]="loginForm" novalidate class="form">
+  <h5 align="center">Product Name</h5>
+  <input
+    formControlName="productName"
+    type="text"
+    class="form-control"
+  />
+  <div
+    class="alert alert-danger"
+    *ngIf="
+      loginForm.get('productName')?.hasError('required') &&
+      loginForm.get('productName')?.touched
+    "
+  >
+    Name is Required
+  </div>
+  <br/>
+  <h5 align="center">Product Brand</h5>
+  <input
+    formControlName="productBrand"
+    type="text"
+    class="form-control"
+  />
+  <div
+    class="alert alert-danger"
+    *ngIf="
+      !loginForm.get('productBrand')?.valid &&
+      loginForm.get('productBrand')?.touched"
+  >
+    Brand is Required
+  </div>
+  <br/>
+  <h5 align="center">Product Price</h5>
+  <input
+    formControlName="productPrice"
+    type="text"
+    class="form-control"
+  />
+  <div
+    class="alert alert-danger"
+    *ngIf="
+      !loginForm.get('productPrice')?.valid &&
+      loginForm.get('productPrice')?.touched
+    "
+  >
+    Price is Required
+  </div>
+  <br/>
+  <button [disabled]="loginForm.invalid" class="btn btn-primary" >
+    Store
+  </button>
+</form>
+</div>
+<div style="margin-top:10px;">
+  <div class="productdetails" *ngIf="showData">
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th>PRODUCT NAME</th>
+          <th>PRODUCT BRAND</th>
+          <th>PRODUCT PRICE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of data">
+          <td>{{ p.pname }}</td>
+          <td>{{ p.pbrand }}</td>
+          <td>{{ p.pprice }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+App.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent  implements OnInit{
+  title = 'form';
+  loginForm!: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  
+  data:any = [];
+  showData: boolean = false;
+
+  ngOnInit() {
+    this.loginForm = this.fb.group({
+      productName: [null, [Validators.required]],
+      productBrand: [null, [Validators.required]],
+      productPrice: [null, [Validators.required]],
+    }); 
+  }
+
+  get name() {
+    return this.loginForm.get('productName')?.value;
+  }
+  
+  get brand() {
+    return this.loginForm.get('productBrand')?.value;
+  }
+
+  get price() {
+    return this.loginForm.get('productPrice')?.value;
+  }
+
+  store() {
+    this.showData = true;
+    this.data.push({
+      "pname"  : this.name,
+      "pbrand" : this.brand,
+      "pprice" : this.price
+    });
+  }
+}
+
+App.Module.ts
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
